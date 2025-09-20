@@ -15,7 +15,7 @@ def main():
         response = notion.databases.query(database_id=DATABASE_ID)
         pages_to_update = response.get("results")
         if not pages_to_update:
-            return
+            continue
         for page in pages_to_update:
             page_id = page["id"]
             properties = page["properties"]
@@ -44,7 +44,7 @@ def main():
                     }
                 )
             else:
-                return
+                continue
 
     except Exception as e:
         return
