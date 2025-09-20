@@ -21,6 +21,9 @@ def main():
     try:
         # All logic is now correctly placed inside the function
         now_local = datetime.now(LOCAL_TIMEZONE)
+        if now_local.time() >= time(8, 0, tzinfo=LOCAL_TIMEZONE):
+            print(f"Script stopped: Current time ({now_local.strftime('%H:%M')}) is past the 8:00 AM deadline.")
+            return
         
         # This variable is now defined before it is used below
         start_of_today = datetime.combine(now_local.date(), time.min, tzinfo=LOCAL_TIMEZONE)
