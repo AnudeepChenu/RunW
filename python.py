@@ -12,10 +12,7 @@ def main():
     try:
         notion = notion_client.Client(auth=NOTION_KEY)
         five_minutes_ago = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
-        response = notion.databases.query(
-            database_id=DATABASE_ID,
-            filter={"timestamp": "last_edited_time", "last_edited_time": {"on_or_after": five_minutes_ago}}
-        )
+        response = notion.databases.query(database_id=DATABASE_ID)
         pages_to_update = response.get("results")
         if not pages_to_update:
             return
