@@ -23,7 +23,7 @@ def main():
         now_local = datetime.now(LOCAL_TIMEZONE)
         if now_local.time() >= time(8, 0, tzinfo=LOCAL_TIMEZONE):
             print(f"Script stopped: Current time ({now_local.strftime('%H:%M')}) is past 8:00 AM.")
-            return
+            continue
 
         notion = notion_client.Client(auth=NOTION_KEY)
 
