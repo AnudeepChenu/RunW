@@ -1,7 +1,7 @@
 import os
 import notion_client
 from datetime import datetime, time
-from zoneinfo import ZoneInfo # Recommended for handling timezones
+from zoneinfo import ZoneInfo
 
 # --- CONFIGURATION ---
 NOTION_KEY = os.environ.get("NOTION_API_KEY")
@@ -15,20 +15,20 @@ LOCAL_TIMEZONE = ZoneInfo("Asia/Kolkata")
 
 def main():
     """
-    Fetches the Notion page created today, and before 8 AM local time,
-    updates its 'Status' based on the number of unchecked workout checkboxes.
+    Fetches the Notion page created today and updates its 'Status' based on
+    the number of unchecked workout checkboxes. It will run even after 8 AM.
     """
     try:
-        # --- 1. TIME CHECK: Stop execution if it's 8 AM or later ---
+        # --- 1. TIME CHECK: Warns but does not stop execution ---
         now_local = datetime.now(LOCAL_TIMEZONE)
         if now_local.time() >= time(8, 0, tzinfo=LOCAL_TIMEZONE):
-            print(f"Script stopped: Current time ({now_local.strftime('%H:%M')}) is past 8:00 AM.")
-            continue
-
+            # This block now only prints a warning and allows the script to continue.
+            print(f"Warning: Current time ({now_local.strftime('%H:%M')}) is past the 8:00 AM deadline.")
+        
+        # The script will now proceed regardless of the time.
         notion = notion_client.Client(auth=NOTION_KEY)
 
         # --- 2. FILTER: Get only pages created today ---
-        # Get the start of today in your local timezone
         start_of_today = datetime.combine(now_local.date(), time.min, tzinfo=LOCAL_TIMEZONE)
 
         response = notion.databases.query(
@@ -47,7 +47,6 @@ def main():
             print("No page found that was created today.")
             return
 
-        # Assuming you only want to update the first page found for today
         page = pages_to_update[0]
         page_id = page["id"]
         properties = page["properties"]
@@ -55,7 +54,6 @@ def main():
         unchecked_count = 0
         for prop_name in CHECKBOX_PROPERTIES:
             prop_data = properties.get(prop_name)
-            # Check if the property exists, is a checkbox, and is unchecked
             if prop_data and prop_data["type"] == "checkbox" and not prop_data["checkbox"]:
                 unchecked_count += 1
 
@@ -64,10 +62,9 @@ def main():
             new_status = "Green"
         elif unchecked_count <= 2:
             new_status = "Orange"
-        else: # unchecked_count > 2
+        else:
             new_status = "Red"
-
-        # Check if an update is needed to avoid unnecessary API calls
+        
         current_status_data = properties.get("Status", {}).get("select")
         current_status = current_status_data["name"] if current_status_data else ""
 
@@ -87,7 +84,6 @@ def main():
             print("Page status is already up-to-date. No changes made.")
 
     except Exception as e:
-        # It's helpful to print the error to know what went wrong
         print(f"An error occurred: {e}")
         return
 
