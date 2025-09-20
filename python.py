@@ -2,8 +2,8 @@ import os
 import notion_client
 from datetime import datetime, timedelta, timezone
 
-NOTION_KEY = os.environ.get("NOTION_KEY")
-DATABASE_ID = os.environ.get("DATABASE_ID")
+NOTION_KEY = os.environ.get("NOTION_API_KEY")
+DATABASE_ID = os.environ.get("NOTION_DATABASE_ID")
 CHECKBOX_PROPERTIES = [
     "Bicep", "Hammer", "Tricep", "Shoulder",
     "Chest", "Russian", "Plank"
