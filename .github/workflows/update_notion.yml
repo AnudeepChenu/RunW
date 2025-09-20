@@ -36,6 +36,6 @@ jobs:
       # 4. Runs the Python script
       - name: Run the notion update script
         env:
-          NOTION_KEY: ${{ secrets.NOTION_API_KEY }}
-          DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python python.py
